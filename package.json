@@ -1,0 +1,17 @@
+{
+  "name": "bb-wallet",
+  "version": "0.1.0",
+  "description": "TypeScript wrapper for the Budget Bakers Wallet REST API",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
