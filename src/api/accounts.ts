@@ -9,7 +9,7 @@ import type { Client } from '../client.ts';
 import { request, runEffect } from '../client.ts';
 import type { Result } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../filters.ts';
-import { textFilterToString, rangeFilterToStrings } from '../filters.ts';
+import { QueryBuilder } from '../query-builder.ts';
 
 /**
  * Money value with currency
@@ -155,68 +155,19 @@ export async function listAccounts(
   client: Client,
   params?: AccountsQueryParams
 ): Promise<Result<AccountsResponse>> {
-  const queryParams = new URLSearchParams();
+  const query = QueryBuilder.create()
+    .add('limit', params?.limit)
+    .add('offset', params?.offset)
+    .add('agentHints', params?.agentHints)
+    .addArray('id', params?.id)
+    .addTextFilters('name', params?.name)
+    .addTextFilters('bankAccountNumber', params?.bankAccountNumber)
+    .add('accountType', params?.accountType)
+    .add('currencyCode', params?.currencyCode)
+    .addRangeFilter('createdAt', params?.createdAt)
+    .addRangeFilter('updatedAt', params?.updatedAt)
+    .build();
 
-  if (params?.limit !== undefined) {
-    queryParams.set('limit', params.limit.toString());
-  }
-  if (params?.offset !== undefined) {
-    queryParams.set('offset', params.offset.toString());
-  }
-  if (params?.agentHints !== undefined) {
-    queryParams.set('agentHints', params.agentHints.toString());
-  }
-
-  // ID - convert array to comma-separated string
-  if (params?.id) {
-    queryParams.set('id', params.id.join(','));
-  }
-
-  // Name - supports up to 2 filters for AND logic
-  if (params?.name) {
-    params.name.forEach((filter) => {
-      queryParams.append('name', textFilterToString(filter));
-    });
-  }
-
-  // Bank account number
-  if (params?.bankAccountNumber) {
-    params.bankAccountNumber.forEach((filter) => {
-      queryParams.append('bankAccountNumber', textFilterToString(filter));
-    });
-  }
-
-  // Account type
-  if (params?.accountType) {
-    queryParams.set('accountType', params.accountType);
-  }
-
-  // Currency code
-  if (params?.currencyCode) {
-    queryParams.set('currencyCode', params.currencyCode);
-  }
-
-  // Created at - range filter
-  if (params?.createdAt) {
-    const ranges = rangeFilterToStrings(params.createdAt);
-    ranges.forEach((range) => {
-      queryParams.append('createdAt', range);
-    });
-  }
-
-  // Updated at - range filter
-  if (params?.updatedAt) {
-    const ranges = rangeFilterToStrings(params.updatedAt);
-    ranges.forEach((range) => {
-      queryParams.append('updatedAt', range);
-    });
-  }
-
-  const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
-  const effect = request<AccountsResponse>(
-    client,
-    `/v1/api/accounts${query}`
-  );
-
+  const effect = request<AccountsResponse>(client, `/v1/api/accounts${query}`);
   return runEffect(effect);
 }
