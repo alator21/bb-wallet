@@ -10,7 +10,9 @@
     "typecheck": "bun tsc --noEmit",
     "typecheck:watch": "bun tsc --noEmit --watch",
     "build": "bun build src/index.ts --outdir dist --target node",
-    "check": "bun run typecheck"
+    "check": "bun run typecheck",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
   },
   "devDependencies": {
     "@types/bun": "latest"
