@@ -4,7 +4,8 @@ A TypeScript wrapper for the Budget Bakers Wallet REST API. Built with Effect.ts
 
 ## Features
 
-- **Promise-based API**: Simple async/await interface
+- **Functional API**: Tree-shakable functions that take a client as first parameter
+- **Promise-based**: Simple async/await interface
 - **Type-safe**: Full TypeScript support
 - **Result types**: No exceptions thrown, all errors returned as results
 - **Effect.ts powered**: Robust error handling and composability under the hood
@@ -20,20 +21,27 @@ bun install
 ## Usage
 
 ```typescript
-import BudgetBakersWallet from './src/index.ts';
+import { createClient, getUser, listAccounts } from './src/index.ts';
 
-// Initialize the client
-const client = new BudgetBakersWallet({
+// Create a client instance
+const client = createClient({
   apiToken: 'your-api-token-here',
 });
 
-// All methods return Result types - never throw exceptions
-const result = await client.getUser();
+// All functions return Result types - never throw exceptions
+const result = await getUser(client);
 
 if (result.success) {
   console.log('User:', result.data);
 } else {
   console.log('Error:', result.error);
+}
+
+// List accounts with pagination
+const accounts = await listAccounts(client, { limit: 50, offset: 0 });
+
+if (accounts.success) {
+  console.log('Accounts:', accounts.data);
 }
 ```
 
@@ -53,8 +61,9 @@ This ensures you always handle both success and error cases explicitly.
 
 ```
 src/
-├── index.ts      # Main API wrapper class
-├── client.ts     # Internal HTTP client (Effect-based)
+├── index.ts      # Main exports
+├── client.ts     # Client factory and internal HTTP utilities
+├── api.ts        # API functions (blueprint)
 ├── types.ts      # Type definitions
 ├── errors.ts     # Error types and handling
 └── example.ts    # Usage examples
@@ -74,7 +83,12 @@ See [Budget Bakers API Documentation](https://rest.budgetbakers.com/wallet/refer
 
 ## Architecture
 
-This wrapper uses Effect.ts internally for:
+**Functional Design**: API functions take a client instance as their first parameter, making them:
+- Tree-shakable (only bundle what you use)
+- Composable and testable
+- Easy to wrap or extend
+
+**Effect.ts Powered**: Uses Effect.ts internally for:
 - Composable error handling
 - Type-safe effects
 - Robust async operations
