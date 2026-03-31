@@ -10,28 +10,8 @@ export {
   type Account,
   type AccountType,
   type AccountsResponse,
+  type AccountsQueryParams,
   type MoneyValue,
   type RecordStats,
   type AgentHint,
 } from './accounts.ts';
-
-// Records
-export {
-  listRecords,
-  getRecord,
-  createRecord,
-  updateRecord,
-  deleteRecord,
-  type Record,
-  type RecordFilters,
-} from './records.ts';
-
-// Categories
-export {
-  listCategories,
-  getCategory,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  type Category,
-} from './categories.ts';

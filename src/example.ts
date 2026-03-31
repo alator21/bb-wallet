@@ -5,15 +5,7 @@
 
 import {
   createClient,
-  // Accounts
   listAccounts,
-  // Records
-  listRecords,
-  getRecord,
-  createRecord,
-  // Categories
-  listCategories,
-  getCategory,
 } from './index.ts';
 
 // Create a client instance
@@ -38,6 +30,11 @@ if (accountsResult.success) {
   console.log('Next offset:', accountsResult.data.nextOffset);
   console.log('Agent hints:', accountsResult.data.agentHints);
 
+  // Metadata from response headers
+  console.log('Metadata:', accountsResult.metadata);
+  console.log('Rate limit remaining:', accountsResult.metadata.rateLimitRemaining);
+  console.log('Sync in progress:', accountsResult.metadata.syncInProgress);
+
   // Example: Access first account details
   const firstAccount = accountsResult.data.accounts[0];
   if (firstAccount) {
@@ -49,64 +46,14 @@ if (accountsResult.success) {
   console.error('Error:', accountsResult.error);
 }
 
-// ============================================================================
-// Records Examples
-// ============================================================================
-
-console.log('\n=== Records ===');
-
-// List records with pagination
-const recordsResult = await listRecords(client, { limit: 20, offset: 0 });
-
-if (recordsResult.success) {
-  console.log('Records:', recordsResult.data.data);
-  console.log('Has more:', recordsResult.data.hasMore);
-} else {
-  console.error('Error:', recordsResult.error);
-}
-
-// Get specific record
-const recordResult = await getRecord(client, 'record-id-456');
-
-if (recordResult.success) {
-  console.log('Record:', recordResult.data);
-} else {
-  console.error('Error:', recordResult.error);
-}
-
-// Create a new record
-const newRecordResult = await createRecord(client, {
-  amount: 100.50,
-  note: 'Coffee and pastry',
-  date: new Date().toISOString(),
+// Example with filters
+const filteredResult = await listAccounts(client, {
+  name: [{ containsInsensitive: 'savings' }],
+  accountType: 'SavingAccount',
+  currencyCode: 'USD',
+  createdAt: { gte: '2024-01-01', lt: '2024-12-31' },
 });
 
-if (newRecordResult.success) {
-  console.log('Created record:', newRecordResult.data);
-} else {
-  console.error('Error:', newRecordResult.error);
-}
-
-// ============================================================================
-// Categories Examples
-// ============================================================================
-
-console.log('\n=== Categories ===');
-
-// List categories
-const categoriesResult = await listCategories(client, { limit: 100 });
-
-if (categoriesResult.success) {
-  console.log('Categories:', categoriesResult.data.data);
-} else {
-  console.error('Error:', categoriesResult.error);
-}
-
-// Get specific category
-const categoryResult = await getCategory(client, 'category-id-789');
-
-if (categoryResult.success) {
-  console.log('Category:', categoryResult.data);
-} else {
-  console.error('Error:', categoryResult.error);
+if (filteredResult.success) {
+  console.log('Filtered accounts:', filteredResult.data.accounts);
 }

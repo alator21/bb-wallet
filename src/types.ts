@@ -18,11 +18,42 @@ export interface ApiError {
 }
 
 /**
+ * Response metadata from API headers
+ */
+export interface ResponseMetadata {
+  /**
+   * Timestamp of last data modification (ISO 8601 UTC with millisecond precision)
+   */
+  lastDataChangeAt?: string;
+
+  /**
+   * Revision counter for change detection. Compare values to detect data changes between requests.
+   */
+  lastDataChangeRev?: string;
+
+  /**
+   * Maximum request capacity (hourly limit)
+   */
+  rateLimitLimit?: number;
+
+  /**
+   * Remaining request capacity in current window
+   */
+  rateLimitRemaining?: number;
+
+  /**
+   * If true, response data is valid but background sync is running — more changes may follow shortly.
+   */
+  syncInProgress?: boolean;
+}
+
+/**
  * Result types for API responses
  */
 export type Success<T> = {
   success: true;
   data: T;
+  metadata: ResponseMetadata;
 };
 
 export type Failure<E = ApiError> = {

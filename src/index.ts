@@ -22,6 +22,7 @@ export type {
   ApiErrorType,
   PaginationParams,
   PaginatedResponse,
+  ResponseMetadata,
 } from './types.ts';
 
 // Export filter types
