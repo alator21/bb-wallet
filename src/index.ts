@@ -23,3 +23,6 @@ export type {
   PaginationParams,
   PaginatedResponse,
 } from './types.ts';
+
+// Export filter types
+export type { TextFilter, RangeFilter } from './filters.ts';

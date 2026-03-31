@@ -7,7 +7,6 @@ import {
   createClient,
   // Accounts
   listAccounts,
-  getAccount,
   // Records
   listRecords,
   getRecord,
@@ -33,22 +32,21 @@ console.log('=== Accounts ===');
 const accountsResult = await listAccounts(client, { limit: 50, offset: 0 });
 
 if (accountsResult.success) {
-  console.log('Accounts:', accountsResult.data.data);
-  console.log('Has more:', accountsResult.data.hasMore);
-  if (accountsResult.data.nextOffset) {
-    console.log('Next offset:', accountsResult.data.nextOffset);
+  console.log('Accounts:', accountsResult.data.accounts);
+  console.log('Limit:', accountsResult.data.limit);
+  console.log('Offset:', accountsResult.data.offset);
+  console.log('Next offset:', accountsResult.data.nextOffset);
+  console.log('Agent hints:', accountsResult.data.agentHints);
+
+  // Example: Access first account details
+  const firstAccount = accountsResult.data.accounts[0];
+  if (firstAccount) {
+    console.log('First account name:', firstAccount.name);
+    console.log('Account type:', firstAccount.accountType);
+    console.log('Balance:', firstAccount.initialBalance);
   }
 } else {
   console.error('Error:', accountsResult.error);
-}
-
-// Get specific account
-const accountResult = await getAccount(client, 'account-id-123');
-
-if (accountResult.success) {
-  console.log('Account:', accountResult.data);
-} else {
-  console.error('Error:', accountResult.error);
 }
 
 // ============================================================================

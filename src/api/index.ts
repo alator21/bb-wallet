@@ -7,11 +7,12 @@
 // Accounts
 export {
   listAccounts,
-  getAccount,
-  createAccount,
-  updateAccount,
-  deleteAccount,
   type Account,
+  type AccountType,
+  type AccountsResponse,
+  type MoneyValue,
+  type RecordStats,
+  type AgentHint,
 } from './accounts.ts';
 
 // Records
