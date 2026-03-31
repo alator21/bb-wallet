@@ -9,17 +9,10 @@
 export { createClient } from './client.ts';
 export type { Client } from './client.ts';
 
-// Export API functions
-export {
-  getUser,
-  listAccounts,
-  getAccount,
-  createTransaction,
-  updateTransaction,
-  deleteTransaction,
-} from './api.ts';
+// Export all API functions and types
+export * from './api/index.ts';
 
-// Export types
+// Export base types
 export type {
   BudgetBakersConfig,
   Result,

@@ -21,29 +21,58 @@ bun install
 ## Usage
 
 ```typescript
-import { createClient, getUser, listAccounts } from './src/index.ts';
+import {
+  createClient,
+  listAccounts,
+  listRecords,
+  listCategories
+} from './src/index.ts';
 
 // Create a client instance
 const client = createClient({
   apiToken: 'your-api-token-here',
 });
 
-// All functions return Result types - never throw exceptions
-const result = await getUser(client);
-
-if (result.success) {
-  console.log('User:', result.data);
-} else {
-  console.log('Error:', result.error);
-}
-
 // List accounts with pagination
 const accounts = await listAccounts(client, { limit: 50, offset: 0 });
 
 if (accounts.success) {
   console.log('Accounts:', accounts.data);
+  console.log('Has more:', accounts.data.hasMore);
+} else {
+  console.log('Error:', accounts.error);
+}
+
+// List records (transactions)
+const records = await listRecords(client, { limit: 20 });
+
+if (records.success) {
+  console.log('Records:', records.data);
+}
+
+// List categories
+const categories = await listCategories(client);
+
+if (categories.success) {
+  console.log('Categories:', categories.data);
 }
 ```
+
+## API Organization
+
+The API is organized by resource type:
+
+- **Accounts** (`src/api/accounts.ts`): Account management operations
+- **Records** (`src/api/records.ts`): Transaction/entry operations
+- **Categories** (`src/api/categories.ts`): Category management operations
+
+Each resource module exports:
+- List function with pagination support
+- Get by ID function
+- Create function
+- Update function
+- Delete function
+- TypeScript types for the resource
 
 ## Result Types
 
@@ -61,12 +90,16 @@ This ensures you always handle both success and error cases explicitly.
 
 ```
 src/
-├── index.ts      # Main exports
-├── client.ts     # Client factory and internal HTTP utilities
-├── api.ts        # API functions (blueprint)
-├── types.ts      # Type definitions
-├── errors.ts     # Error types and handling
-└── example.ts    # Usage examples
+├── index.ts          # Main exports
+├── client.ts         # Client factory and internal HTTP utilities
+├── types.ts          # Shared type definitions
+├── errors.ts         # Error types and handling
+├── example.ts        # Usage examples
+└── api/              # API functions organized by resource
+    ├── index.ts      # Barrel exports
+    ├── accounts.ts   # Account operations
+    ├── records.ts    # Record operations (transactions/entries)
+    └── categories.ts # Category operations
 ```
 
 ## Development

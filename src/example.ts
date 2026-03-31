@@ -3,7 +3,19 @@
  * Functional style - functions take client as first parameter
  */
 
-import { createClient, getUser, listAccounts, getAccount, createTransaction } from './index.ts';
+import {
+  createClient,
+  // Accounts
+  listAccounts,
+  getAccount,
+  // Records
+  listRecords,
+  getRecord,
+  createRecord,
+  // Categories
+  listCategories,
+  getCategory,
+} from './index.ts';
 
 // Create a client instance
 const client = createClient({
@@ -11,16 +23,13 @@ const client = createClient({
   // baseUrl: 'https://rest.budgetbakers.com/wallet', // Optional, this is the default
 });
 
-// Example: Get user info
-const userResult = await getUser(client);
+// ============================================================================
+// Accounts Examples
+// ============================================================================
 
-if (userResult.success) {
-  console.log('User:', userResult.data);
-} else {
-  console.error('Error:', userResult.error);
-}
+console.log('=== Accounts ===');
 
-// Example: List accounts with pagination
+// List accounts with pagination
 const accountsResult = await listAccounts(client, { limit: 50, offset: 0 });
 
 if (accountsResult.success) {
@@ -33,7 +42,7 @@ if (accountsResult.success) {
   console.error('Error:', accountsResult.error);
 }
 
-// Example: Get specific account
+// Get specific account
 const accountResult = await getAccount(client, 'account-id-123');
 
 if (accountResult.success) {
@@ -42,15 +51,64 @@ if (accountResult.success) {
   console.error('Error:', accountResult.error);
 }
 
-// Example: Create a transaction
-const transactionResult = await createTransaction(client, {
+// ============================================================================
+// Records Examples
+// ============================================================================
+
+console.log('\n=== Records ===');
+
+// List records with pagination
+const recordsResult = await listRecords(client, { limit: 20, offset: 0 });
+
+if (recordsResult.success) {
+  console.log('Records:', recordsResult.data.data);
+  console.log('Has more:', recordsResult.data.hasMore);
+} else {
+  console.error('Error:', recordsResult.error);
+}
+
+// Get specific record
+const recordResult = await getRecord(client, 'record-id-456');
+
+if (recordResult.success) {
+  console.log('Record:', recordResult.data);
+} else {
+  console.error('Error:', recordResult.error);
+}
+
+// Create a new record
+const newRecordResult = await createRecord(client, {
   amount: 100.50,
-  description: 'Coffee',
-  // ... other fields
+  note: 'Coffee and pastry',
+  date: new Date().toISOString(),
 });
 
-if (transactionResult.success) {
-  console.log('Created transaction:', transactionResult.data);
+if (newRecordResult.success) {
+  console.log('Created record:', newRecordResult.data);
 } else {
-  console.error('Error:', transactionResult.error);
+  console.error('Error:', newRecordResult.error);
+}
+
+// ============================================================================
+// Categories Examples
+// ============================================================================
+
+console.log('\n=== Categories ===');
+
+// List categories
+const categoriesResult = await listCategories(client, { limit: 100 });
+
+if (categoriesResult.success) {
+  console.log('Categories:', categoriesResult.data.data);
+} else {
+  console.error('Error:', categoriesResult.error);
+}
+
+// Get specific category
+const categoryResult = await getCategory(client, 'category-id-789');
+
+if (categoryResult.success) {
+  console.log('Category:', categoryResult.data);
+} else {
+  console.error('Error:', categoryResult.error);
 }
