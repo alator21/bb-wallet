@@ -26,4 +26,4 @@ export type {
 } from './types.ts';
 
 // Export filter types
-export type { TextFilter, RangeFilter } from './filters.ts';
+export type { TextFilter, RangeFilter } from './utils/filters.ts';

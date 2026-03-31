@@ -8,8 +8,8 @@ import { Effect } from 'effect';
 import type { Client } from '../client.ts';
 import { request, runEffect } from '../client.ts';
 import type { Result } from '../types.ts';
-import type { TextFilter, RangeFilter } from '../filters.ts';
-import { QueryBuilder } from '../query-builder.ts';
+import type { TextFilter, RangeFilter } from '../utils/filters.ts';
+import { QueryBuilder } from '../utils/query-builder.ts';
 
 /**
  * Money value with currency

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
-import { QueryBuilder } from './query-builder.ts';
-import type { TextFilter, RangeFilter } from './filters.ts';
+import { QueryBuilder } from '../src/utils/query-builder.ts';
+import type { TextFilter, RangeFilter } from '../src/utils/filters.ts';
 
 describe('QueryBuilder', () => {
   describe('add (scalar values)', () => {

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
-import { textFilterToString, rangeFilterToStrings } from './filters.ts';
-import type { TextFilter, RangeFilter } from './filters.ts';
+import { textFilterToString, rangeFilterToStrings } from '../src/utils/filters.ts';
+import type { TextFilter, RangeFilter } from '../src/utils/filters.ts';
 
 describe('textFilterToString', () => {
   test('converts eq filter', () => {

@@ -6,7 +6,7 @@
 import {
   createClient,
   listAccounts,
-} from './index.ts';
+} from '../src/index.ts';
 
 // Create a client instance
 const client = createClient({
