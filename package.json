@@ -6,12 +6,19 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/example.ts",
+    "typecheck": "bun tsc --noEmit",
+    "typecheck:watch": "bun tsc --noEmit --watch",
+    "build": "bun build src/index.ts --outdir dist --target node",
+    "check": "bun run typecheck"
   },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "effect": "^3.21.0"
   }
 }
