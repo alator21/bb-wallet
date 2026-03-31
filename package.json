@@ -2,9 +2,10 @@
   "name": "bb-wallet",
   "version": "0.1.0",
   "description": "TypeScript wrapper for the Budget Bakers Wallet REST API",
+  "license": "MIT",
   "module": "src/index.ts",
   "type": "module",
-  "private": true,
+  "exports": "./src/index.ts",
   "scripts": {
     "dev": "bun run examples/basic-usage.ts",
     "typecheck": "bun tsc --noEmit",

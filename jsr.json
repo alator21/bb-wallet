@@ -1,0 +1,17 @@
+{
+  "name": "@alator21/bb-wallet",
+  "version": "0.1.0",
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "README.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "src/**/*.test.ts",
+      "examples",
+      "tests"
+    ]
+  }
+}
