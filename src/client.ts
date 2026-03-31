@@ -85,7 +85,14 @@ export function request<T>(
       });
 
       if (!response.ok) {
-        throw parseHttpError(response.status, response.statusText);
+        let errorBody;
+        try {
+          errorBody = await response.json();
+        } catch {
+          errorBody = response.statusText;
+        }
+        const retryAfter = response.headers.get('Retry-After');
+        throw parseHttpError(response.status, errorBody, retryAfter);
       }
 
       const data = await response.json() as T;
