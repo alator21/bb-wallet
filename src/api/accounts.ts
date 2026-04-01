@@ -4,9 +4,8 @@
  * Functions for managing accounts
  */
 
-import { Effect } from 'effect';
 import type { Client } from '../client.ts';
-import { request, runEffect } from '../client.ts';
+import { request } from '../client.ts';
 import type { Result } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
@@ -168,6 +167,5 @@ export async function listAccounts(
     .addRangeFilter('updatedAt', params?.updatedAt)
     .build();
 
-  const effect = request<AccountsResponse>(client, `/v1/api/accounts${query}`);
-  return runEffect(effect);
+  return request<AccountsResponse>(client, `/v1/api/accounts${query}`);
 }

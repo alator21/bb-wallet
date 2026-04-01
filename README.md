@@ -1,8 +1,8 @@
 # Budget Bakers Wallet API Wrapper
 
-A TypeScript wrapper for the Budget Bakers Wallet REST API. Built with Effect.ts internally for robust error handling, but exposes a clean Promise-based API for consumers.
+A TypeScript wrapper for the Budget Bakers Wallet REST API with robust error handling and a clean Promise-based API.
 
-> **Work In Progress**: This library currently supports the Accounts API. More endpoints (records, categories, budgets, etc.) will be added in future releases.
+> **Work In Progress**: This library currently supports Accounts, Budgets, and Categories APIs. More endpoints (records, labels, currencies, etc.) will be added in future releases.
 
 ## Features
 
@@ -10,10 +10,10 @@ A TypeScript wrapper for the Budget Bakers Wallet REST API. Built with Effect.ts
 - **Promise-based**: Simple async/await interface
 - **Type-safe**: Full TypeScript support with comprehensive types
 - **Result types**: No exceptions thrown, all errors returned as results
-- **Effect.ts powered**: Robust error handling and composability under the hood
+- **Robust error handling**: Typed errors for network, auth, rate limiting, and API errors
 - **Advanced filtering**: Text filters (contains, starts/ends with) and range filters for precise queries
 - **Response metadata**: Access rate limit info, sync status, and data revision tracking
-- **Rate limiting aware**: Handles API rate limits gracefully
+- **Zero dependencies**: Lightweight with no runtime dependencies
 
 ## Installation
 
@@ -90,20 +90,43 @@ const specific = await listAccounts(client, {
 
 - **`listAccounts`**: List accounts with advanced filtering and pagination
 
-**Account Types Supported:**
+**Account Types:**
 - `General`, `Cash`, `CurrentAccount`, `CreditCard`, `SavingAccount`
 - `Bonus`, `Insurance`, `Investment`, `Loan`, `Mortgage`, `Overdraft`
 
-**Filters Available:**
+**Filters:**
 - `id`: Filter by account IDs (max 30)
 - `name`: Text filter (contains, starts/ends with, case-insensitive)
 - `bankAccountNumber`: Text filter
 - `accountType`: Filter by account type
 - `currencyCode`: ISO 4217 currency code
 - `createdAt`, `updatedAt`: Date range filters (gte, gt, lte, lt)
-- `agentHints`: Enable AI agent hints in response
+- `agentHints`: Enable AI agent hints
 
-**Coming Soon:** Get by ID, create, update, and delete operations
+### Budgets (`src/api/budgets.ts`)
+
+- **`listBudgets`**: List budgets with advanced filtering and pagination
+
+**Filters:**
+- `id`: Filter by budget IDs (max 30)
+- `name`: Text filter (contains, starts/ends with, case-insensitive)
+- `currencyCode`: ISO 4217 currency code
+- `createdAt`, `updatedAt`: Date range filters (gte, gt, lte, lt)
+- `agentHints`: Enable AI agent hints
+
+### Categories (`src/api/categories.ts`)
+
+- **`listCategories`**: List categories with advanced filtering and pagination
+
+**Filters:**
+- `id`: Filter by category IDs (max 30)
+- `name`: Text filter (contains, starts/ends with, case-insensitive)
+- `createdAt`, `updatedAt`: Date range filters (gte, gt, lte, lt)
+- `agentHints`: Enable AI agent hints
+
+### Coming Soon
+
+Get by ID, create, update, and delete operations for all resources
 
 ## Result Types
 
@@ -139,7 +162,9 @@ src/
 │   └── query-builder.ts   # Query parameter builder utility
 └── api/
     ├── index.ts           # API barrel exports
-    └── accounts.ts        # Accounts API (list, types, filters)
+    ├── accounts.ts        # Accounts API
+    ├── budgets.ts         # Budgets API
+    └── categories.ts      # Categories API
 
 examples/
 └── basic-usage.ts         # Usage examples
@@ -163,10 +188,9 @@ bun run typecheck
 The following endpoints are planned for future releases:
 
 - **Records API**: Create, read, update, delete transactions/entries
-- **Categories API**: Manage transaction categories
-- **Budgets API**: Budget management and tracking
 - **Labels API**: Custom labels and tags
 - **Currencies API**: Currency information and exchange rates
+- **CRUD Operations**: Get by ID, create, update, delete for existing resources
 
 Contributions are welcome! See the [Budget Bakers API Documentation](https://rest.budgetbakers.com/wallet/reference) for the full API reference.
 
@@ -196,12 +220,11 @@ This allows you to:
 - Composable and testable
 - Easy to wrap or extend
 
-**Effect.ts Powered**: Uses Effect.ts internally for:
-- Composable error handling
-- Type-safe effects
-- Robust async operations
-
-But exposes a simple Promise-based API so consumers don't need to know about Effect.ts.
+**Simple & Lightweight**: Uses standard async/await with:
+- No runtime dependencies
+- Clean Promise-based API
+- Type-safe Result types for all operations
+- Explicit error handling (no thrown exceptions)
 
 ## Publishing
 

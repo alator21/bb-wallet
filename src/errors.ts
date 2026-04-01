@@ -1,16 +1,20 @@
-import { Data } from 'effect';
 import type { ApiError, ApiErrorType } from './types.ts';
 
 /**
- * Effect-compatible error class
+ * Budget Bakers API error class
  */
-export class BudgetBakersError extends Data.TaggedError('BudgetBakersError')<{
-  type: ApiErrorType;
-  message: string;
-  statusCode?: number;
-  details?: unknown;
-  retryAfter?: number;
-}> {
+export class BudgetBakersError extends Error {
+  constructor(
+    public readonly type: ApiErrorType,
+    message: string,
+    public readonly statusCode?: number,
+    public readonly details?: unknown,
+    public readonly retryAfter?: number
+  ) {
+    super(message);
+    this.name = 'BudgetBakersError';
+  }
+
   toApiError(): ApiError {
     return {
       type: this.type,
@@ -26,55 +30,25 @@ export class BudgetBakersError extends Data.TaggedError('BudgetBakersError')<{
  * Error factory functions
  */
 export const createNetworkError = (message: string, details?: unknown) =>
-  new BudgetBakersError({
-    type: 'NetworkError',
-    message,
-    details,
-  });
+  new BudgetBakersError('NetworkError', message, undefined, details);
 
 export const createAuthError = (message: string = 'Authentication failed') =>
-  new BudgetBakersError({
-    type: 'AuthenticationError',
-    message,
-    statusCode: 401,
-  });
+  new BudgetBakersError('AuthenticationError', message, 401);
 
 export const createRateLimitError = (message: string = 'Rate limit exceeded', retryAfter?: number) =>
-  new BudgetBakersError({
-    type: 'RateLimitError',
-    message,
-    statusCode: 429,
-    retryAfter,
-  });
+  new BudgetBakersError('RateLimitError', message, 429, undefined, retryAfter);
 
 export const createValidationError = (message: string, details?: unknown) =>
-  new BudgetBakersError({
-    type: 'ValidationError',
-    message,
-    statusCode: 400,
-    details,
-  });
+  new BudgetBakersError('ValidationError', message, 400, details);
 
 export const createNotFoundError = (message: string = 'Resource not found') =>
-  new BudgetBakersError({
-    type: 'NotFoundError',
-    message,
-    statusCode: 404,
-  });
+  new BudgetBakersError('NotFoundError', message, 404);
 
 export const createServerError = (message: string, statusCode: number = 500) =>
-  new BudgetBakersError({
-    type: 'ServerError',
-    message,
-    statusCode,
-  });
+  new BudgetBakersError('ServerError', message, statusCode);
 
 export const createUnknownError = (message: string, details?: unknown) =>
-  new BudgetBakersError({
-    type: 'UnknownError',
-    message,
-    details,
-  });
+  new BudgetBakersError('UnknownError', message, undefined, details);
 
 /**
  * API error response body

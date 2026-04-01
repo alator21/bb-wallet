@@ -4,9 +4,8 @@
  * Functions for managing budgets
  */
 
-import { Effect } from 'effect';
 import type { Client } from '../client.ts';
-import { request, runEffect } from '../client.ts';
+import { request } from '../client.ts';
 import type { Result } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
@@ -127,6 +126,5 @@ export async function listBudgets(
     .addRangeFilter('updatedAt', params?.updatedAt)
     .build();
 
-  const effect = request<BudgetsResponse>(client, `/v1/api/budgets${query}`);
-  return runEffect(effect);
+  return request<BudgetsResponse>(client, `/v1/api/budgets${query}`);
 }

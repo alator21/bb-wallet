@@ -4,9 +4,8 @@
  * Functions for managing categories
  */
 
-import { Effect } from 'effect';
 import type { Client } from '../client.ts';
-import { request, runEffect } from '../client.ts';
+import { request } from '../client.ts';
 import type { Result } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
@@ -112,6 +111,5 @@ export async function listCategories(
     .addRangeFilter('updatedAt', params?.updatedAt)
     .build();
 
-  const effect = request<CategoriesResponse>(client, `/v1/api/categories${query}`);
-  return runEffect(effect);
+  return request<CategoriesResponse>(client, `/v1/api/categories${query}`);
 }

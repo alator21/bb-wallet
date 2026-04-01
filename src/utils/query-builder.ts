@@ -1,10 +1,9 @@
 /**
  * Query Builder
  *
- * Effect-based fluent interface for building URL query parameters
+ * Fluent interface for building URL query parameters
  */
 
-import { Effect } from 'effect';
 import type { TextFilter, RangeFilter } from './filters.ts';
 import { textFilterToString, rangeFilterToStrings } from './filters.ts';
 
@@ -76,12 +75,5 @@ export class QueryBuilder {
   build(): string {
     const query = this.params.toString();
     return query ? `?${query}` : '';
-  }
-
-  /**
-   * Build as an Effect (for future validation/transformation)
-   */
-  buildEffect(): Effect.Effect<string, never> {
-    return Effect.succeed(this.build());
   }
 }
