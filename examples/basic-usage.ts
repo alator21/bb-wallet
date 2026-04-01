@@ -7,6 +7,7 @@ import {
   createClient,
   listAccounts,
   listBudgets,
+  listCategories,
 } from '../src/index.ts';
 
 // Create a client instance
@@ -102,4 +103,48 @@ const filteredBudgets = await listBudgets(client, {
 
 if (filteredBudgets.success) {
   console.log('Filtered budgets:', filteredBudgets.data.budgets);
+}
+
+// ============================================================================
+// Categories Examples
+// ============================================================================
+
+console.log('=== Categories ===');
+
+// List categories with pagination
+const categoriesResult = await listCategories(client, { limit: 50, offset: 0 });
+
+if (categoriesResult.success) {
+  console.log('Categories:', categoriesResult.data.categories);
+  console.log('Limit:', categoriesResult.data.limit);
+  console.log('Offset:', categoriesResult.data.offset);
+  console.log('Next offset:', categoriesResult.data.nextOffset);
+  console.log('Agent hints:', categoriesResult.data.agentHints);
+
+  // Metadata from response headers
+  console.log('Metadata:', categoriesResult.metadata);
+  console.log('Rate limit remaining:', categoriesResult.metadata.rateLimitRemaining);
+  console.log('Sync in progress:', categoriesResult.metadata.syncInProgress);
+
+  // Example: Access first category details
+  const firstCategory = categoriesResult.data.categories[0];
+  if (firstCategory) {
+    console.log('First category name:', firstCategory.name);
+    console.log('Category color:', firstCategory.color);
+    console.log('Icon name:', firstCategory.iconName);
+    console.log('Archived:', firstCategory.archived);
+    console.log('Custom category:', firstCategory.customCategory);
+  }
+} else {
+  console.error('Error:', categoriesResult.error);
+}
+
+// Example with filters
+const filteredCategories = await listCategories(client, {
+  name: [{ containsInsensitive: 'food' }],
+  createdAt: { gte: '2024-01-01' },
+});
+
+if (filteredCategories.success) {
+  console.log('Filtered categories:', filteredCategories.data.categories);
 }

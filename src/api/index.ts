@@ -24,3 +24,11 @@ export {
   type BudgetsQueryParams,
   type Label,
 } from './budgets.ts';
+
+// Categories
+export {
+  listCategories,
+  type Category,
+  type CategoriesResponse,
+  type CategoriesQueryParams,
+} from './categories.ts';
