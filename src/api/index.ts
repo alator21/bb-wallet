@@ -15,3 +15,12 @@ export {
   type RecordStats,
   type AgentHint,
 } from './accounts.ts';
+
+// Budgets
+export {
+  listBudgets,
+  type Budget,
+  type BudgetsResponse,
+  type BudgetsQueryParams,
+  type Label,
+} from './budgets.ts';
