@@ -4,6 +4,9 @@
  * Re-exports all API functions and types from resource modules
  */
 
+// Shared embedded entity types
+export type { LabelEmbed, CategoryEmbed } from '../types.ts';
+
 // Accounts
 export {
   listAccounts,
@@ -21,7 +24,6 @@ export {
   type BudgetsResponse,
   type BudgetsQueryParams,
   type Label,
-  type LabelEmbed,
 } from './budgets.ts';
 
 // Categories
@@ -31,3 +33,19 @@ export {
   type CategoriesResponse,
   type CategoriesQueryParams,
 } from './categories.ts';
+
+// Records
+export {
+  listRecords,
+  getRecordsByIds,
+  type Record,
+  type RecordsResponse,
+  type RecordsByIdResponse,
+  type RecordsQueryParams,
+  type RecordType,
+  type RecordState,
+  type PaymentType,
+  type RecordSortBy,
+  type RecordPhoto,
+  type RecordPlace,
+} from './records.ts';

@@ -2,7 +2,7 @@
 
 A TypeScript wrapper for the Budget Bakers Wallet REST API with robust error handling and a clean Promise-based API.
 
-> **Work In Progress**: This library currently supports Accounts, Budgets, and Categories APIs. More endpoints (records, labels, currencies, etc.) will be added in future releases.
+> **Work In Progress**: This library currently supports Accounts, Budgets, Categories, and Records APIs. More endpoints (labels, goals, standing orders, etc.) will be added in future releases.
 
 ## Features
 
@@ -31,7 +31,7 @@ npx jsr add @alator21/bb-wallet
 ## Usage
 
 ```typescript
-import { createClient, listAccounts } from '@alator21/bb-wallet';
+import { createClient, listAccounts, listRecords } from '@alator21/bb-wallet';
 
 // Create a client instance
 const client = createClient({
@@ -50,6 +50,24 @@ if (result.success) {
   console.log('Last data change:', result.metadata.lastDataChangeAt);
 } else {
   console.error('Error:', result.error);
+}
+
+// List financial records (transactions)
+const records = await listRecords(client, {
+  recordDate: { gte: '2024-01-01', lt: '2024-12-31' },
+  sortBy: '-recordDate',  // Sort by date descending
+  limit: 100
+});
+
+if (records.success) {
+  console.log('Records:', records.data.records);
+  console.log('Applied date range:', records.data.recordDateRange);
+
+  // Access first transaction
+  const tx = records.data.records[0];
+  console.log('Transaction:', tx.amount, tx.category, tx.recordDate);
+} else {
+  console.error('Error:', records.error);
 }
 ```
 
@@ -124,6 +142,43 @@ const specific = await listAccounts(client, {
 - `createdAt`, `updatedAt`: Date range filters (gte, gt, lte, lt)
 - `agentHints`: Enable AI agent hints
 
+### Records (`src/api/records.ts`)
+
+- **`listRecords`**: List financial transaction records with advanced filtering and pagination
+- **`getRecordsByIds`**: Get specific records by their IDs (max 30)
+
+**Record Types:**
+- `income`: Money received
+- `expense`: Money spent
+
+**Record States:**
+- `reconciled`: Verified against bank statement
+- `cleared`: Processed by bank
+- `uncleared`: Pending
+- `void`: Cancelled/reversed
+- `waitForAssign`: Awaiting categorization
+
+**Payment Types:**
+- `cash`, `debit_card`, `credit_card`, `transfer`, `voucher`, `mobile_payment`, `web_payment`
+
+**Filters:**
+- `accountId`: Filter by account ID (exact match)
+- `recordDate`: Transaction date range (gte, gt, lte, lt) - max range: 370 days
+- `categoryId`: Filter by category ID
+- `labelId`: Filter by label ID
+- `note`: Text filter for transaction notes
+- `payee`: Text filter for expense payee
+- `payer`: Text filter for income payer
+- `amount`: Range filter for transaction amount
+- `createdAt`, `updatedAt`: Date range filters
+- `sortBy`: Sort by recordDate, amount, createdAt, or updatedAt (prefix with + or -)
+- `agentHints`: Enable AI agent hints
+
+**Note:** The `recordDate` filter is automatically applied with defaults:
+- No bounds → last 3 months from now
+- Only lower bound → 3 months forward
+- Only upper bound → 3 months back
+
 ### Coming Soon
 
 Get by ID, create, update, and delete operations for all resources
@@ -164,7 +219,8 @@ src/
     ├── index.ts           # API barrel exports
     ├── accounts.ts        # Accounts API
     ├── budgets.ts         # Budgets API
-    └── categories.ts      # Categories API
+    ├── categories.ts      # Categories API
+    └── records.ts         # Records API (transactions)
 
 examples/
 └── basic-usage.ts         # Usage examples
@@ -187,10 +243,12 @@ bun run typecheck
 
 The following endpoints are planned for future releases:
 
-- **Records API**: Create, read, update, delete transactions/entries
 - **Labels API**: Custom labels and tags
-- **Currencies API**: Currency information and exchange rates
-- **CRUD Operations**: Get by ID, create, update, delete for existing resources
+- **Goals API**: Financial goals and savings targets
+- **Standing Orders API**: Recurring payments
+- **Record Rules API**: Automatic categorization rules
+- **API Usage Stats**: Track API usage statistics
+- **CRUD Operations**: Create, update, delete operations for all resources
 
 Contributions are welcome! See the [Budget Bakers API Documentation](https://rest.budgetbakers.com/wallet/reference) for the full API reference.
 

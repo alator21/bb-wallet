@@ -6,19 +6,9 @@
 
 import type { Client } from '../client.ts';
 import { request } from '../client.ts';
-import type { Result, AgentHint } from '../types.ts';
+import type { Result, AgentHint, LabelEmbed } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
-
-/**
- * Label entity (embedded in other resources)
- */
-export interface LabelEmbed {
-  id: string;
-  name: string;
-  color: string;
-  archived: boolean;
-}
 
 /**
  * Full Label entity with timestamps

@@ -176,3 +176,48 @@ export interface AgentHint {
    */
   data?: Record<string, unknown> | null;
 }
+
+/**
+ * Embedded entity types (used in responses)
+ */
+
+/**
+ * Label entity (embedded in other resources like budgets, records, standing orders)
+ */
+export interface LabelEmbed {
+  /**
+   * Label ID
+   */
+  id: string;
+  /**
+   * Label name
+   */
+  name: string;
+  /**
+   * Hex color code
+   */
+  color: string;
+  /**
+   * Whether the label is archived
+   */
+  archived: boolean;
+}
+
+/**
+ * Category entity (embedded in records and record rules)
+ */
+export interface CategoryEmbed {
+  /**
+   * Category ID
+   */
+  id: string;
+  /**
+   * Category name
+   */
+  name: string;
+  /**
+   * Hex color code
+   */
+  color: string;
+  envelopeId: number;
+}

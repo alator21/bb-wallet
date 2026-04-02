@@ -8,6 +8,8 @@ import {
   listAccounts,
   listBudgets,
   listCategories,
+  listRecords,
+  getRecordsByIds,
 } from "../src/index.ts";
 
 // Create a client instance
@@ -156,4 +158,123 @@ const filteredCategories = await listCategories(client, {
 
 if (filteredCategories.success) {
   console.log("Filtered categories:", filteredCategories.data.categories);
+}
+
+// ============================================================================
+// Records Examples
+// ============================================================================
+
+console.log("=== Records ===\\");
+
+// List records with pagination
+// Note: recordDate filter is applied automatically (defaults to last 3 months if not specified)
+const recordsResult = await listRecords(client, {
+  limit: 50,
+  offset: 0,
+  recordDate: { gte: "2024-01-01", lt: "2024-12-31" },
+  sortBy: "-recordDate", // Sort by date descending (newest first)
+});
+
+if (recordsResult.success) {
+  console.log("Records:", recordsResult.data.records);
+  console.log("Limit:", recordsResult.data.limit);
+  console.log("Offset:", recordsResult.data.offset);
+  console.log("Next offset:", recordsResult.data.nextOffset);
+  console.log("Applied date range:", recordsResult.data.recordDateRange);
+  console.log("Agent hints:", recordsResult.data.agentHints);
+
+  // Metadata from response headers
+  console.log("Metadata:", recordsResult.metadata);
+  console.log(
+    "Rate limit remaining:",
+    recordsResult.metadata.rateLimitRemaining,
+  );
+  console.log("Sync in progress:", recordsResult.metadata.syncInProgress);
+
+  // Example: Access first record details
+  const firstRecord = recordsResult.data.records[0];
+  if (firstRecord) {
+    console.log("First record ID:", firstRecord.id);
+    console.log("Record type:", firstRecord.recordType); // 'income' or 'expense'
+    console.log("Amount:", firstRecord.amount);
+    console.log("Base amount:", firstRecord.baseAmount);
+    console.log("Date:", firstRecord.recordDate);
+    console.log("Category:", firstRecord.category);
+    console.log("Labels:", firstRecord.labels);
+    console.log("Note:", firstRecord.note);
+    console.log("Payee:", firstRecord.payee);
+    console.log("Payment type:", firstRecord.paymentType);
+  }
+} else {
+  console.error("Error:", recordsResult.error);
+}
+
+// Example: Filter records by account
+const accountRecords = await listRecords(client, {
+  accountId: "your-account-id-here",
+  recordDate: { gte: "2024-01-01" },
+  limit: 100,
+});
+
+if (accountRecords.success) {
+  console.log("Account records:", accountRecords.data.records);
+}
+
+// Example: Filter expense records with complex filters
+const expenseRecords = await listRecords(client, {
+  recordDate: { gte: "2024-01-01", lt: "2024-12-31" },
+  categoryId: "food-category-id",
+  note: [{ containsInsensitive: "grocery" }],
+  amount: { gte: "10.00", lt: "500.00" },
+  sortBy: "-amount", // Sort by amount descending (largest first)
+  limit: 50,
+});
+
+if (expenseRecords.success) {
+  console.log("Filtered expense records:", expenseRecords.data.records);
+}
+
+// Example: Filter by payee (for expenses)
+const vendorRecords = await listRecords(client, {
+  payee: [{ containsInsensitive: "walmart" }],
+  recordDate: { gte: "2024-01-01" },
+  sortBy: "-recordDate",
+});
+
+if (vendorRecords.success) {
+  console.log("Walmart records:", vendorRecords.data.records);
+}
+
+// Example: Filter income records by payer
+const incomeRecords = await listRecords(client, {
+  payer: [{ containsInsensitive: "employer" }],
+  recordDate: { gte: "2024-01-01" },
+  sortBy: "+recordDate", // Sort ascending (oldest first)
+});
+
+if (incomeRecords.success) {
+  console.log("Income from employer:", incomeRecords.data.records);
+}
+
+// ============================================================================
+// Get Records by IDs
+// ============================================================================
+
+console.log("=== Get Records by IDs ===\\");
+
+// Get specific records by their IDs
+const recordIds = ["record-id-1", "record-id-2", "record-id-3"];
+const specificRecords = await getRecordsByIds(client, recordIds, true);
+
+if (specificRecords.success) {
+  console.log("Specific records:", specificRecords.data.records);
+  console.log("Count:", specificRecords.data.count);
+  console.log("Agent hints:", specificRecords.data.agentHints);
+
+  // Access individual records
+  for (const record of specificRecords.data.records) {
+    console.log(`Record ${record.id}:`, record.amount, record.recordDate);
+  }
+} else {
+  console.error("Error:", specificRecords.error);
 }
