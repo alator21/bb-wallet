@@ -6,31 +6,17 @@
 
 import type { Client } from '../client.ts';
 import { request } from '../client.ts';
-import type { Result } from '../types.ts';
+import type { Result, AgentHint, BalanceWithCurrency, StatDateRange } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
 
 /**
- * Money value with currency
+ * Account statistics (record counts and date ranges)
  */
-export interface MoneyValue {
-  currencyCode: string;
-  value: number;
-}
-
-/**
- * Record statistics for an account
- */
-export interface RecordStats {
-  createdAt: {
-    max: string;
-    min: string;
-  };
+export interface AccountStats {
   recordCount: number;
-  recordDate: {
-    max: string;
-    min: string;
-  };
+  recordDate: StatDateRange;
+  createdAt: StatDateRange;
 }
 
 /**
@@ -53,31 +39,19 @@ export type AccountType =
  * Account entity
  */
 export interface Account {
-  accountType: AccountType;
-  archived: boolean;
-  bankAccountNumber: string;
-  color: string;
-  createdAt: string;
-  excludeFromStats: boolean;
   id: string;
-  initialBalance: MoneyValue;
-  initialBaseBalance: MoneyValue;
+  archived: boolean;
+  color: string;
   name: string;
-  recordStats: RecordStats;
+  createdAt: string;
   updatedAt: string;
-}
-
-/**
- * Agent hint for AI-driven clients
- */
-export interface AgentHint {
-  action: {
-    url: string;
-  };
-  data: unknown;
-  severity: 'info' | 'warning' | 'error';
-  text: string;
-  type: string;
+  accountType: AccountType;
+  excludeFromStats: boolean;
+  // Optional fields (only present when set)
+  bankAccountNumber?: string;
+  initialBalance?: BalanceWithCurrency;
+  initialBaseBalance?: BalanceWithCurrency;
+  recordStats?: AccountStats | null;
 }
 
 /**
@@ -85,10 +59,10 @@ export interface AgentHint {
  */
 export interface AccountsResponse {
   limit: number;
-  nextOffset: number;
+  nextOffset?: number;
   offset: number;
   accounts: Account[];
-  agentHints: AgentHint[];
+  agentHints?: AgentHint[] | null;
 }
 
 /**

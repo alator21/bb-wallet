@@ -23,6 +23,12 @@ export type {
   PaginationParams,
   PaginatedResponse,
   ResponseMetadata,
+  AgentHint,
+  AgentHintType,
+  AgentHintSeverity,
+  AmountWithCurrency,
+  BalanceWithCurrency,
+  StatDateRange,
 } from './types.ts';
 
 // Export filter types

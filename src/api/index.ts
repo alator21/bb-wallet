@@ -11,9 +11,7 @@ export {
   type AccountType,
   type AccountsResponse,
   type AccountsQueryParams,
-  type MoneyValue,
-  type RecordStats,
-  type AgentHint,
+  type AccountStats,
 } from './accounts.ts';
 
 // Budgets
@@ -23,6 +21,7 @@ export {
   type BudgetsResponse,
   type BudgetsQueryParams,
   type Label,
+  type LabelEmbed,
 } from './budgets.ts';
 
 // Categories

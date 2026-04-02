@@ -88,3 +88,91 @@ export interface PaginatedResponse<T> {
   nextOffset?: number;
   hasMore: boolean;
 }
+
+/**
+ * Money and balance types
+ */
+
+/**
+ * Amount with currency (used for transaction amounts)
+ */
+export interface AmountWithCurrency {
+  /**
+   * Currency code (ISO 4217)
+   */
+  currencyCode?: string;
+  /**
+   * Amount value in decimal format (e.g., 1234.56). Not in cents.
+   */
+  value?: number;
+}
+
+/**
+ * Balance with currency (used for account balances)
+ */
+export interface BalanceWithCurrency {
+  currencyCode?: string;
+  value?: number;
+}
+
+/**
+ * Date range for statistics
+ */
+export interface StatDateRange {
+  min: string;
+  max: string;
+}
+
+/**
+ * Agent Hint types for AI-driven clients
+ */
+
+/**
+ * Severity level of the agent hint
+ */
+export type AgentHintSeverity = 'info' | 'warning' | 'instruction';
+
+/**
+ * Hint category using dot-notation
+ */
+export type AgentHintType =
+  | 'pagination.has_more'
+  | 'result.partial_match'
+  | 'result.empty'
+  | 'param.inferred'
+  | 'rate_limit.warning'
+  | 'data.recency';
+
+/**
+ * Structured hint for AI agents to understand API responses and take appropriate actions
+ */
+export interface AgentHint {
+  /**
+   * Hint category using dot-notation
+   */
+  type: AgentHintType;
+
+  /**
+   * Indicates the nature/importance of the hint
+   */
+  severity: AgentHintSeverity;
+
+  /**
+   * Human/AI-readable description of the hint
+   */
+  text: string;
+
+  /**
+   * Action data for instruction hints. Only present when severity=instruction.
+   * Contains url for fetching next page.
+   */
+  action?: {
+    url: string;
+  } | null;
+
+  /**
+   * Context data specific to the hint type. Structure varies based on the 'type' field.
+   * See 'text' for human-readable explanation.
+   */
+  data?: Record<string, unknown> | null;
+}

@@ -6,7 +6,7 @@
 
 import type { Client } from '../client.ts';
 import { request } from '../client.ts';
-import type { Result } from '../types.ts';
+import type { Result, AgentHint } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
 
@@ -14,32 +14,20 @@ import { QueryBuilder } from '../utils/query-builder.ts';
  * Category entity
  */
 export interface Category {
-  archived: boolean;
-  cardinality: string;
+  id: string;
   color: string;
+  name: string;
   createdAt: string;
+  updatedAt: string;
   customCategory: boolean;
   customColor: boolean;
   customName: boolean;
-  enabled: boolean;
   envelopeId: number;
-  iconName: string;
-  id: string;
-  name: string;
-  updatedAt: string;
-}
-
-/**
- * Agent hint for AI-driven clients
- */
-export interface AgentHint {
-  action: {
-    url: string;
-  };
-  data: unknown;
-  severity: 'info' | 'warning' | 'error';
-  text: string;
-  type: string;
+  // Optional fields (only present when set)
+  archived?: boolean;
+  cardinality?: string;
+  enabled?: boolean;
+  iconName?: string;
 }
 
 /**
@@ -47,10 +35,10 @@ export interface AgentHint {
  */
 export interface CategoriesResponse {
   limit: number;
-  nextOffset: number;
+  nextOffset?: number;
   offset: number;
   categories: Category[];
-  agentHints: AgentHint[];
+  agentHints?: AgentHint[] | null;
 }
 
 /**

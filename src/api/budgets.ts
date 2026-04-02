@@ -6,49 +6,49 @@
 
 import type { Client } from '../client.ts';
 import { request } from '../client.ts';
-import type { Result } from '../types.ts';
+import type { Result, AgentHint } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
 
 /**
- * Label entity
+ * Label entity (embedded in other resources)
  */
-export interface Label {
-  archived: boolean;
-  color: string;
+export interface LabelEmbed {
   id: string;
   name: string;
+  color: string;
+  archived: boolean;
+}
+
+/**
+ * Full Label entity with timestamps
+ */
+export interface Label {
+  id: string;
+  name: string;
+  color: string;
+  archived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**
  * Budget entity
  */
 export interface Budget {
-  accountIds: string[];
-  amount: string;
-  categoryIds: string[];
-  createdAt: string;
-  currencyCode: string;
-  endDate: string;
   id: string;
-  labels: Label[];
+  amount: string;
+  currencyCode: string;
+  labels: LabelEmbed[];
   name: string;
-  startDate: string;
-  type: string;
+  createdAt: string;
   updatedAt: string;
-}
-
-/**
- * Agent hint for AI-driven clients
- */
-export interface AgentHint {
-  action: {
-    url: string;
-  };
-  data: unknown;
-  severity: 'info' | 'warning' | 'error';
-  text: string;
-  type: string;
+  endDate: string;
+  startDate: string;
+  // Optional fields (only present when set)
+  accountIds?: string[];
+  categoryIds?: string[];
+  type?: string;
 }
 
 /**
@@ -56,10 +56,10 @@ export interface AgentHint {
  */
 export interface BudgetsResponse {
   limit: number;
-  nextOffset: number;
+  nextOffset?: number;
   offset: number;
   budgets: Budget[];
-  agentHints: AgentHint[];
+  agentHints?: AgentHint[] | null;
 }
 
 /**
