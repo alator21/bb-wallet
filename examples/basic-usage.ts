@@ -9,6 +9,7 @@ import {
   listBudgets,
   listCategories,
   listGoals,
+  listLabels,
   listRecords,
   getRecordsByIds,
   getAPIUsageStats,
@@ -209,6 +210,52 @@ const filteredGoals = await listGoals(client, {
 
 if (filteredGoals.success) {
   console.log("Filtered goals:", filteredGoals.data.goals);
+}
+
+// ============================================================================
+// Labels Examples
+// ============================================================================
+
+console.log("=== Labels ===");
+
+// List labels with pagination
+const labelsResult = await listLabels(client, { limit: 50, offset: 0 });
+
+if (labelsResult.success) {
+  console.log("Labels:", labelsResult.data.labels);
+  console.log("Limit:", labelsResult.data.limit);
+  console.log("Offset:", labelsResult.data.offset);
+  console.log("Next offset:", labelsResult.data.nextOffset);
+  console.log("Agent hints:", labelsResult.data.agentHints);
+
+  // Metadata from response headers
+  console.log("Metadata:", labelsResult.metadata);
+  console.log(
+    "Rate limit remaining:",
+    labelsResult.metadata.rateLimitRemaining,
+  );
+  console.log("Sync in progress:", labelsResult.metadata.syncInProgress);
+
+  // Example: Access first label details
+  const firstLabel = labelsResult.data.labels[0];
+  if (firstLabel) {
+    console.log("First label name:", firstLabel.name);
+    console.log("Label color:", firstLabel.color);
+    console.log("Archived:", firstLabel.archived);
+    console.log("Created at:", firstLabel.createdAt);
+  }
+} else {
+  console.error("Error:", labelsResult.error);
+}
+
+// Example with filters
+const filteredLabels = await listLabels(client, {
+  name: [{ containsInsensitive: "important" }],
+  createdAt: { gte: "2024-01-01" },
+});
+
+if (filteredLabels.success) {
+  console.log("Filtered labels:", filteredLabels.data.labels);
 }
 
 // ============================================================================

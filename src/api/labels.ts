@@ -1,49 +1,65 @@
 /**
- * Budgets API
+ * Labels API
  *
- * Functions for managing budgets
+ * Functions for managing labels/hashtags
  */
 
 import type { Client } from '../client.ts';
 import { request } from '../client.ts';
-import type { Result, AgentHint, LabelEmbed } from '../types.ts';
+import type { Result, AgentHint } from '../types.ts';
 import type { TextFilter, RangeFilter } from '../utils/filters.ts';
 import { QueryBuilder } from '../utils/query-builder.ts';
 
 /**
- * Budget entity
+ * Label entity (full version with timestamps)
  */
-export interface Budget {
+export interface Label {
+  /**
+   * Unique identifier
+   */
   id: string;
-  amount: string;
-  currencyCode: string;
-  labels: LabelEmbed[];
+
+  /**
+   * Label name
+   */
   name: string;
+
+  /**
+   * Hex color code
+   */
+  color: string;
+
+  /**
+   * Whether the label is archived
+   */
+  archived: boolean;
+
+  /**
+   * Creation timestamp
+   */
   createdAt: string;
+
+  /**
+   * Last update timestamp
+   */
   updatedAt: string;
-  endDate: string;
-  startDate: string;
-  // Optional fields (only present when set)
-  accountIds?: string[];
-  categoryIds?: string[];
-  type?: string;
 }
 
 /**
- * Budgets list response
+ * Labels list response
  */
-export interface BudgetsResponse {
+export interface LabelsResponse {
   limit: number;
   nextOffset?: number;
   offset: number;
-  budgets: Budget[];
+  labels: Label[];
   agentHints?: AgentHint[] | null;
 }
 
 /**
- * Query parameters for listing budgets
+ * Query parameters for listing labels
  */
-export interface BudgetsQueryParams {
+export interface LabelsQueryParams {
   /**
    * Maximum number of items to return (1-200, default: 30)
    */
@@ -71,11 +87,6 @@ export interface BudgetsQueryParams {
   name?: TextFilter[];
 
   /**
-   * Filter by currency code (ISO 4217). Exact match, case-insensitive.
-   */
-  currencyCode?: string;
-
-  /**
    * Filter by creation timestamp.
    */
   createdAt?: RangeFilter;
@@ -87,22 +98,42 @@ export interface BudgetsQueryParams {
 }
 
 /**
- * List all budgets with pagination and filtering
+ * List all labels/hashtags with pagination and filtering
+ *
+ * @param client - The API client
+ * @param params - Optional query parameters for filtering and pagination
+ * @returns Paginated list of labels
+ *
+ * @example
+ * ```typescript
+ * // Get all labels
+ * const result = await listLabels(client);
+ *
+ * // Filter by name
+ * const result = await listLabels(client, {
+ *   name: [{ containsInsensitive: 'important' }],
+ *   limit: 50
+ * });
+ *
+ * // Get non-archived labels
+ * const result = await listLabels(client, {
+ *   limit: 100
+ * });
+ * ```
  */
-export async function listBudgets(
+export async function listLabels(
   client: Client,
-  params?: BudgetsQueryParams
-): Promise<Result<BudgetsResponse>> {
+  params?: LabelsQueryParams
+): Promise<Result<LabelsResponse>> {
   const query = QueryBuilder.create()
     .add('limit', params?.limit)
     .add('offset', params?.offset)
     .add('agentHints', params?.agentHints)
     .addArray('id', params?.id)
     .addTextFilters('name', params?.name)
-    .add('currencyCode', params?.currencyCode)
     .addRangeFilter('createdAt', params?.createdAt)
     .addRangeFilter('updatedAt', params?.updatedAt)
     .build();
 
-  return request<BudgetsResponse>(client, `/v1/api/budgets${query}`);
+  return request<LabelsResponse>(client, `/v1/api/labels${query}`);
 }
