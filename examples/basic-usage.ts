@@ -13,6 +13,7 @@ import {
   listRecords,
   getRecordsByIds,
   listRecordRules,
+  listStandingOrders,
   getAPIUsageStats,
 } from "../src/index.ts";
 
@@ -305,6 +306,61 @@ const filteredRules = await listRecordRules(client, {
 
 if (filteredRules.success) {
   console.log("Filtered record rules:", filteredRules.data.recordRules);
+}
+
+// ============================================================================
+// Standing Orders Examples
+// ============================================================================
+
+console.log("=== Standing Orders ===");
+
+// List standing orders with pagination
+const ordersResult = await listStandingOrders(client, { limit: 50, offset: 0 });
+
+if (ordersResult.success) {
+  console.log("Standing Orders:", ordersResult.data.standingOrders);
+  console.log("Limit:", ordersResult.data.limit);
+  console.log("Offset:", ordersResult.data.offset);
+  console.log("Next offset:", ordersResult.data.nextOffset);
+  console.log("Agent hints:", ordersResult.data.agentHints);
+
+  // Metadata from response headers
+  console.log("Metadata:", ordersResult.metadata);
+  console.log(
+    "Rate limit remaining:",
+    ordersResult.metadata.rateLimitRemaining,
+  );
+  console.log("Sync in progress:", ordersResult.metadata.syncInProgress);
+
+  // Example: Access first standing order details
+  const firstOrder = ordersResult.data.standingOrders[0];
+  if (firstOrder) {
+    console.log("First order name:", firstOrder.name);
+    console.log("Type:", firstOrder.type);
+    console.log("Amount:", firstOrder.amount, firstOrder.currencyCode);
+    console.log("Recurrence rule:", firstOrder.recurrenceRule);
+    console.log("Generate from date:", firstOrder.generateFromDate);
+    console.log("Manual payment:", firstOrder.manualPayment);
+    console.log("Category ID:", firstOrder.categoryId);
+    if (firstOrder.labels && firstOrder.labels.length > 0) {
+      console.log("Labels:", firstOrder.labels.map(l => l.name).join(", "));
+    }
+    console.log("Payee:", firstOrder.payee);
+    console.log("Payer:", firstOrder.payer);
+  }
+} else {
+  console.error("Error:", ordersResult.error);
+}
+
+// Example with filters
+const filteredOrders = await listStandingOrders(client, {
+  name: [{ containsInsensitive: "rent" }],
+  currencyCode: "USD",
+  createdAt: { gte: "2024-01-01" },
+});
+
+if (filteredOrders.success) {
+  console.log("Filtered standing orders:", filteredOrders.data.standingOrders);
 }
 
 // ============================================================================

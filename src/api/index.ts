@@ -81,3 +81,12 @@ export {
   type RecordRulesResponse,
   type RecordRulesQueryParams,
 } from './record-rules.ts';
+
+// Standing Orders
+export {
+  listStandingOrders,
+  type StandingOrder,
+  type StandingOrderType,
+  type StandingOrdersResponse,
+  type StandingOrdersQueryParams,
+} from './standing-orders.ts';
