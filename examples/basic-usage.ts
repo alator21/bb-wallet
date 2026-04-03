@@ -12,6 +12,7 @@ import {
   listLabels,
   listRecords,
   getRecordsByIds,
+  listRecordRules,
   getAPIUsageStats,
 } from "../src/index.ts";
 
@@ -256,6 +257,54 @@ const filteredLabels = await listLabels(client, {
 
 if (filteredLabels.success) {
   console.log("Filtered labels:", filteredLabels.data.labels);
+}
+
+// ============================================================================
+// Record Rules Examples
+// ============================================================================
+
+console.log("=== Record Rules ===");
+
+// List record rules with pagination
+const rulesResult = await listRecordRules(client, { limit: 50, offset: 0 });
+
+if (rulesResult.success) {
+  console.log("Record Rules:", rulesResult.data.recordRules);
+  console.log("Limit:", rulesResult.data.limit);
+  console.log("Offset:", rulesResult.data.offset);
+  console.log("Next offset:", rulesResult.data.nextOffset);
+  console.log("Agent hints:", rulesResult.data.agentHints);
+
+  // Metadata from response headers
+  console.log("Metadata:", rulesResult.metadata);
+  console.log(
+    "Rate limit remaining:",
+    rulesResult.metadata.rateLimitRemaining,
+  );
+  console.log("Sync in progress:", rulesResult.metadata.syncInProgress);
+
+  // Example: Access first rule details
+  const firstRule = rulesResult.data.recordRules[0];
+  if (firstRule) {
+    console.log("First rule name:", firstRule.name);
+    console.log("Keywords:", firstRule.keywords);
+    console.log("Category:", firstRule.category.name);
+    console.log("Labels:", firstRule.labels.map(l => l.name).join(", "));
+    console.log("From Account ID:", firstRule.fromAccountId);
+    console.log("To Account ID:", firstRule.toAccountId);
+  }
+} else {
+  console.error("Error:", rulesResult.error);
+}
+
+// Example with filters
+const filteredRules = await listRecordRules(client, {
+  name: [{ containsInsensitive: "grocery" }],
+  createdAt: { gte: "2024-01-01" },
+});
+
+if (filteredRules.success) {
+  console.log("Filtered record rules:", filteredRules.data.recordRules);
 }
 
 // ============================================================================

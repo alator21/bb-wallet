@@ -73,3 +73,11 @@ export {
   type RecordPhoto,
   type RecordPlace,
 } from './records.ts';
+
+// Record Rules
+export {
+  listRecordRules,
+  type RecordRule,
+  type RecordRulesResponse,
+  type RecordRulesQueryParams,
+} from './record-rules.ts';
