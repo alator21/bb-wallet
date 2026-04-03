@@ -10,6 +10,7 @@ import {
   listCategories,
   listRecords,
   getRecordsByIds,
+  getAPIUsageStats,
 } from "../src/index.ts";
 
 // Create a client instance
@@ -277,4 +278,47 @@ if (specificRecords.success) {
   }
 } else {
   console.error("Error:", specificRecords.error);
+}
+
+// ============================================================================
+// API Usage Stats
+// ============================================================================
+
+console.log("=== API Usage Stats ===");
+
+// Get last 30 days with daily granularity
+const usageStats = await getAPIUsageStats(client, { period: "30days" });
+
+if (usageStats.success) {
+  console.log("Period:", usageStats.data.period);
+  console.log("Granularity:", usageStats.data.granularity);
+  console.log("Date range:", usageStats.data.from, "to", usageStats.data.to);
+  console.log("Total requests:", usageStats.data.total);
+
+  // Display first 5 days of usage
+  console.log("\nDaily usage (first 5 days):");
+  usageStats.data.usage.slice(0, 5).forEach((entry) => {
+    const date = new Date(entry.from).toISOString().split('T')[0];
+    console.log(`  ${date}: ${entry.total} requests`);
+  });
+
+  // Metadata from response headers
+  console.log("\nMetadata:", usageStats.metadata);
+  console.log(
+    "Rate limit remaining:",
+    usageStats.metadata.rateLimitRemaining,
+  );
+} else {
+  console.error("Error:", usageStats.error);
+}
+
+// Example: Get last 4 weeks with weekly granularity
+const weeklyUsage = await getAPIUsageStats(client, { period: "4weeks" });
+
+if (weeklyUsage.success) {
+  console.log("\nWeekly usage stats:");
+  weeklyUsage.data.usage.forEach((entry) => {
+    const weekStart = new Date(entry.from).toISOString().split('T')[0];
+    console.log(`  Week of ${weekStart}: ${entry.total} requests`);
+  });
 }

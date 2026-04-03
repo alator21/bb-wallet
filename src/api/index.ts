@@ -7,6 +7,15 @@
 // Shared embedded entity types
 export type { LabelEmbed, CategoryEmbed } from '../types.ts';
 
+// API Usage
+export {
+  getAPIUsageStats,
+  type APIUsageStats,
+  type APIUsageStatsEntry,
+  type APIUsageStatsQueryParams,
+  type UsageGranularity,
+} from './api-usage.ts';
+
 // Accounts
 export {
   listAccounts,
