@@ -8,6 +8,7 @@ import {
   listAccounts,
   listBudgets,
   listCategories,
+  listGoals,
   listRecords,
   getRecordsByIds,
   getAPIUsageStats,
@@ -159,6 +160,55 @@ const filteredCategories = await listCategories(client, {
 
 if (filteredCategories.success) {
   console.log("Filtered categories:", filteredCategories.data.categories);
+}
+
+// ============================================================================
+// Goals Examples
+// ============================================================================
+
+console.log("=== Goals ===");
+
+// List goals with pagination
+const goalsResult = await listGoals(client, { limit: 50, offset: 0 });
+
+if (goalsResult.success) {
+  console.log("Goals:", goalsResult.data.goals);
+  console.log("Limit:", goalsResult.data.limit);
+  console.log("Offset:", goalsResult.data.offset);
+  console.log("Next offset:", goalsResult.data.nextOffset);
+  console.log("Agent hints:", goalsResult.data.agentHints);
+
+  // Metadata from response headers
+  console.log("Metadata:", goalsResult.metadata);
+  console.log(
+    "Rate limit remaining:",
+    goalsResult.metadata.rateLimitRemaining,
+  );
+  console.log("Sync in progress:", goalsResult.metadata.syncInProgress);
+
+  // Example: Access first goal details
+  const firstGoal = goalsResult.data.goals[0];
+  if (firstGoal) {
+    console.log("First goal name:", firstGoal.name);
+    console.log("Target amount:", firstGoal.targetAmount);
+    console.log("Initial amount:", firstGoal.initialAmount);
+    console.log("Desired date:", firstGoal.desiredDate);
+    console.log("State:", firstGoal.state);
+    console.log("Color:", firstGoal.color);
+    console.log("Note:", firstGoal.note);
+  }
+} else {
+  console.error("Error:", goalsResult.error);
+}
+
+// Example with filters
+const filteredGoals = await listGoals(client, {
+  name: [{ containsInsensitive: "vacation" }],
+  createdAt: { gte: "2024-01-01" },
+});
+
+if (filteredGoals.success) {
+  console.log("Filtered goals:", filteredGoals.data.goals);
 }
 
 // ============================================================================

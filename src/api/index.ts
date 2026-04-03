@@ -43,6 +43,14 @@ export {
   type CategoriesQueryParams,
 } from './categories.ts';
 
+// Goals
+export {
+  listGoals,
+  type Goal,
+  type GoalsResponse,
+  type GoalsQueryParams,
+} from './goals.ts';
+
 // Records
 export {
   listRecords,
